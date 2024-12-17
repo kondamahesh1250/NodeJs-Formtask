@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Main Form Container */
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        #result {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <form id="form" enctype="multipart/form-data">
+            <h2>Register Form</h2>
+
+            <label for="fullname">Full Name</label>
+            <input type="text" name="fullname" id="fullname">
+
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email">
+
+            <label for="password">Password</label>
+            <input type="text" name="password" id="password">
+
+            <label for="c_password">Confirm Password</label>
+            <input type="text" name="c_password" id="c_password">
+
+            <label for="file">File Upload</label>
+            <input type="file" name="file" id="file">
+
+            <button type="submit">Submit</button>
+        </form>
+        <br>
+        <div style="text-align: center;">
+            <span>Already Registerd?</span> <a href="./login.html">Login</a>
+        </div>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        let form = document.getElementById("form");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            let password = document.getElementById("password");
+            let c_password = document.getElementById("c_password");
+
+            if(password.value!==c_password.value){
+                return alert("Password does not match");
+            }
+
+            // Create a FormData object to handle the form data
+            let formData = new FormData();
+            formData.append("fullname", document.getElementById("fullname").value);
+            formData.append("email", document.getElementById("email").value);
+            formData.append("password", document.getElementById("password").value);
+            formData.append("file", document.getElementById("file").files[0]); // Get the selected file
+
+            // Send the data to the server using fetch with FormData
+            let response = await fetch("http://localhost:3006/register", {
+                method: "POST",
+                body: formData 
+            });
+
+            // Handle the response
+            let data = await response.json();
+            console.log(data); // Log the response to check if it's correct
+
+           
+            let result = document.getElementById("result");
+            if (data.message) {  
+                result.textContent = data.message; // Display the server message
+                window.location.href = "./verify.html"; // Redirect to the verify page
+            } else {
+                result.textContent = data.message; // Display error message from server
+            }
+        });
+    </script>
+
+</body>
+</html>

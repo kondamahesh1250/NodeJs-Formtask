@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Main Form Container */
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        #result {
+            font-weight: bold;
+            color: #d9534f; /* Red for error message */
+        }
+
+        .success {
+            color: #5bc0de; /* Light blue for success message */
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <form id="form">
+            <h2>Verify</h2>
+
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email">
+
+            <label for="otp">Enter OTP</label>
+            <input type="text" name="otp" id="otp">
+
+            <button type="submit">Submit</button>
+        </form>
+        <br>
+        <div style="text-align: center;">
+            <span>Already Verified?</span> <a href="./login.html">Login</a>
+        </div>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        let form = document.getElementById("form");
+        let result = document.getElementById("result");
+        let email = document.getElementById("email");
+        let otp = document.getElementById("otp");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            let obj = {
+                email: email.value,
+                otp: otp.value
+            };
+
+            let response = await fetch("http://localhost:3006/verify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            });
+            console.log(obj);
+
+            let data = await response.json();
+
+            if (data.status === 200) {
+                result.innerHTML = data.message;
+                result.classList.add("success"); // Add success styling
+                result.classList.remove("error"); // Remove error styling if any
+            } else {
+                result.innerHTML = data.message;
+                result.classList.add("error"); // Add error styling
+                result.classList.remove("success"); // Remove success styling if any
+            }
+        });
+    </script>
+
+</body>
+
+</html>
